@@ -3,6 +3,9 @@ package GUI;
 import javax.swing.*;
 import java.util.*;
 
+/**
+ * This class handles of defining {@link JMenuBar} for application.
+ */
 public class Menu extends JMenuBar {
 
     private static final ResourceBundle language = MainFrame.getLanguage();
@@ -19,6 +22,10 @@ public class Menu extends JMenuBar {
         add(optionsMenu);
     }
 
+    /**
+     * Returns Set collection of every theme found in LaF module.
+     * @return Set<String> object with names of all themes
+     */
     private static Set<String> namesOfAllThemes(){
         var list = new Themes().allThemes();
         var listForCombo = new HashSet<String>();
@@ -29,6 +36,10 @@ public class Menu extends JMenuBar {
         return listForCombo;
     }
 
+    /**
+     * Creates list of every theme available for user in form of {@link JComboBox}
+     * @return JComboBox<String> object
+     */
     private static JComboBox<String> createComboOfThemes(){
         JComboBox<String> themesCombo = new JComboBox<>();
         var list = namesOfAllThemes();
