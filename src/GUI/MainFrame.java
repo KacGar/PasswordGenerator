@@ -1,5 +1,6 @@
 package GUI;
 
+import com.formdev.flatlaf.IntelliJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme;
 import lang.LanguageBundle;
 import lang.languages.EnglishLanguage;
@@ -8,8 +9,11 @@ import lang.languages.PolishLanguage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * This class handles creation of {@link JFrame} object and filling its content. This class holds main() method where custom look and feel is set up.
@@ -20,6 +24,8 @@ public class MainFrame extends JFrame {
     private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 4;
     private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 4;
     private static ResourceBundle language;
+    private static JPanel mainPanel;
+    private static JFrame frame;
 
     /**
      * Default constructor which initializes object and sets every setting.
@@ -29,8 +35,29 @@ public class MainFrame extends JFrame {
         setTitle(language.getString("title"));
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
-        setVisible(true);
+        mainPanel = new MainPanel();
+        add(mainPanel);
+        setJMenuBar(new Menu());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame = this;
+        setVisible(true);
+    }
+
+    public static void updateTheme(int index){
+        try {
+            Themes themes = new Themes();
+            Class<IntelliJTheme.ThemeLaf> c = (Class<IntelliJTheme.ThemeLaf>) Class.forName(themes.allThemes().get(index));
+            Preferences root = Preferences.userRoot();
+            Preferences node = root.node("passwordGenerator");
+            node.put("laf", themes.allThemes().get(index));
+            Method method = c.getDeclaredMethod("setup", null);
+            method.invoke(null);
+            UIManager.setLookAndFeel(c.getName());
+            SwingUtilities.updateComponentTreeUI(frame.getRootPane());
+
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
@@ -56,12 +83,20 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                //loading custom Look and Feel
-                FlatVuesionIJTheme.setup();
-                new MainFrame().add(new MainPanel());
+                Preferences root = Preferences.userRoot();
+                Preferences node = root.node("passwordGenerator");
+                String className = node.get("laf", "empty");
+                if (!className.equals("empty")){
+                    Class<IntelliJTheme.ThemeLaf> c = (Class<IntelliJTheme.ThemeLaf>) Class.forName(className);
+                    Method method = c.getDeclaredMethod("setup", null);
+                    method.invoke(null);
+                } else {
+                    FlatVuesionIJTheme.setup();
+                }
+                new MainFrame();
             } catch( Exception ex ) {
                 //custom LaF failed, then launch with standard LaF
-                new MainFrame().add(new MainPanel());
+                new MainFrame();
             }
         });
     }
