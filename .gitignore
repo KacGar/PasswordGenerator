@@ -4,6 +4,9 @@
 # Log file
 *.log
 
+#psswds file
+src/password/psswds.txt
+
 # BlueJ files
 *.ctxt
 
