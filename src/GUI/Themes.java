@@ -7,12 +7,21 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * This class sets list of all available themes in LaF module. List contains fully qualified names of theme classes.
+ */
 public class Themes {
 
     private List<String> allThemes = new ArrayList<>();
 
+    /**
+     * Constructor which initializes list
+     */
     Themes(){getAllThemes();}
 
+    /**
+     * Sets list by searching all classes from LaF jar located in LaF module. Every entry of a list is a fully qualified class path.
+     */
     private void getAllThemes(){
         try {
             JarFile jarFile = new JarFile("src/LaF/flatlaf-intellij-themes-2.0.jar");
@@ -37,6 +46,10 @@ public class Themes {
         }
     }
 
+    /**
+     * Returns list of all themes.
+     * @return List<String> of all themes
+     */
     public List<String> allThemes(){
         return allThemes;
     }

@@ -43,6 +43,11 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * This method handles updating Look and Feel for application, list of choices are displayed in a Dialog box after clicking menu.
+     * Dialog contains ComboBox with all possible themes. After selecting item, action listener is triggered.
+     * @param index index of selected item
+     */
     public static void updateTheme(int index){
         try {
             Themes themes = new Themes();
@@ -56,7 +61,7 @@ public class MainFrame extends JFrame {
             SwingUtilities.updateComponentTreeUI(frame.getRootPane());
 
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException exception) {
-            exception.printStackTrace();
+            JOptionPane.showMessageDialog(frame,language.getString("classError"));
         }
     }
 
